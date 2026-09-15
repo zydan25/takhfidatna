@@ -76,6 +76,13 @@ jobs:
               cp -R android/capacitor-cordova-android-plugins android-existing/capacitor-cordova-android-plugins
             fi
 
+            # The tracked Android shell is intentionally minimal and may not contain
+            # Capacitor's generated Android resources (themes, strings, launcher icons,
+            # FileProvider paths). Keep the tracked native code/settings while restoring
+            # the generated resources needed by a clean CI build.
+            rm -rf android-existing/app/src/main/res
+            cp -R android/app/src/main/res android-existing/app/src/main/res
+
             rm -rf android
             mv android-existing android
             rm -f capacitor.config.json
