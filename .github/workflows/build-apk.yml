@@ -48,6 +48,30 @@ jobs:
         with:
           packages: platform-tools
 
+      - name: Restore Capacitor Android Gradle Files
+        run: |
+          if [ ! -f android/gradlew ]; then
+            echo "Tracked Android project is missing Gradle wrapper/root files; generating a temporary Capacitor Android project."
+            mv android android-existing
+            npx cap add android
+
+            cp android/gradlew android-existing/gradlew
+            cp android/gradlew.bat android-existing/gradlew.bat
+            cp android/build.gradle android-existing/build.gradle
+            cp android/settings.gradle android-existing/settings.gradle
+            cp android/variables.gradle android-existing/variables.gradle
+            cp android/gradle.properties android-existing/gradle.properties
+            cp -R android/gradle android-existing/gradle
+
+            if [ -d android/capacitor-cordova-android-plugins ]; then
+              rm -rf android-existing/capacitor-cordova-android-plugins
+              cp -R android/capacitor-cordova-android-plugins android-existing/capacitor-cordova-android-plugins
+            fi
+
+            rm -rf android
+            mv android-existing android
+          fi
+
       - name: Sync Web Assets to Android Native Project
         run: |
           npx cap sync android
