@@ -77,11 +77,21 @@ jobs:
             fi
 
             # The tracked Android shell is intentionally minimal and may not contain
-            # Capacitor's generated Android resources (themes, strings, launcher icons,
-            # FileProvider paths). Keep the tracked native code/settings while restoring
-            # the generated resources needed by a clean CI build.
+            # Capacitor's generated Android resources or launcher activity. Keep the
+            # tracked native code/settings while restoring the generated pieces needed
+            # by a clean CI build and by Android at runtime.
             rm -rf android-existing/app/src/main/res
             cp -R android/app/src/main/res android-existing/app/src/main/res
+
+            if [ -d android/app/src/main/java ]; then
+              mkdir -p android-existing/app/src/main/java
+              cp -R android/app/src/main/java/. android-existing/app/src/main/java/
+            fi
+
+            if [ -d android/app/src/main/kotlin ]; then
+              mkdir -p android-existing/app/src/main/kotlin
+              cp -R android/app/src/main/kotlin/. android-existing/app/src/main/kotlin/
+            fi
 
             rm -rf android
             mv android-existing android
