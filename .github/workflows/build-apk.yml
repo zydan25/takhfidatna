@@ -51,7 +51,15 @@ jobs:
       - name: Restore Capacitor Android Gradle Files
         run: |
           if [ ! -f android/gradlew ]; then
-            echo "Tracked Android project is missing Gradle wrapper/root files; generating a temporary Capacitor Android project."
+            echo "Tracked Android project is missing Gradle wrapper/root files; generating them from Capacitor."
+            cat > capacitor.config.json <<'EOF'
+          {
+            "appId": "com.altakhfeedalsh.app",
+            "appName": "التخفيض الصح",
+            "webDir": "www"
+          }
+          EOF
+
             mv android android-existing
             npx cap add android
 
@@ -70,6 +78,7 @@ jobs:
 
             rm -rf android
             mv android-existing android
+            rm -f capacitor.config.json
           fi
 
       - name: Sync Web Assets to Android Native Project
